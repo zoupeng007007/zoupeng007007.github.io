@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>邹鹏的博客</title>
+  <title>blog-zoupeng</title>
   
-  <subtitle>成长之路</subtitle>
+  <subtitle>road</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/child/"/>
-  <updated>2021-03-31T11:35:42.261Z</updated>
+  <updated>2021-03-31T16:27:49.546Z</updated>
   <id>http://yoursite.com/child/</id>
   
   <author>
@@ -17,41 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>5W2H | 关于写博客的七点反思</title>
-    <link href="http://yoursite.com/child/2021/03/21/5w2h-godweiyang/"/>
-    <id>http://yoursite.com/child/2021/03/21/5w2h-godweiyang/</id>
-    <published>2021-03-21T11:34:00.000Z</published>
-    <updated>2021-03-31T11:35:42.261Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;blockquote&gt;
-&lt;p&gt;关注公众号【算法码上来】，每日算法干货马上就来！&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;/medias/contact.jpg&quot; alt&gt;&lt;/p&gt;
-&lt;h2 id=&quot;When？什么时候开始写的？&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-      <category term="随笔" scheme="http://yoursite.com/child/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="博客" scheme="http://yoursite.com/child/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>5W2H | 关于写博客的七点反思</title>
+    <title>为什么要写博客？</title>
     <link href="http://yoursite.com/child/2021/03/21/new-document/"/>
     <id>http://yoursite.com/child/2021/03/21/new-document/</id>
     <published>2021-03-21T11:34:00.000Z</published>
-    <updated>2021-03-31T13:46:45.633Z</updated>
+    <updated>2021-03-31T16:27:49.546Z</updated>
     
     <summary type="html">
     
@@ -59,17 +29,13 @@
       
         
         
-          &lt;blockquote&gt;
-&lt;p&gt;关注公众号【算法码上来】，每日算法干货马上就来！&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;/medias/contact.jpg&quot; alt&gt;&lt;/p&gt;
-&lt;h2 id=&quot;When？什么时候开始写的？&quot;&gt;&lt;a
+          &lt;h2 id=&quot;为什么要写博客？&quot;&gt;&lt;a href=&quot;#为什么要写博客？&quot; class=&quot;headerlink&quot;
         
       
     
     </summary>
     
-      <category term="随笔" scheme="http://yoursite.com/child/categories/%E9%9A%8F%E7%AC%94/"/>
+      <category term="随便写写" scheme="http://yoursite.com/child/categories/%E9%9A%8F%E4%BE%BF%E5%86%99%E5%86%99/"/>
     
     
       <category term="博客" scheme="http://yoursite.com/child/tags/%E5%8D%9A%E5%AE%A2/"/>
