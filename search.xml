@@ -4,9 +4,234 @@
   
     
     <entry>
+      <title>栈帧组成之局部变量表和操作数栈</title>
+      <link href="/2021/04/05/stack/"/>
+      <url>/2021/04/05/stack/</url>
+      
+        <content type="html"><![CDATA[<h1 id="什么是局部变量表"><a href="#什么是局部变量表" class="headerlink" title="什么是局部变量表"></a>什么是局部变量表</h1><p>局部变量表,LocalVariableTable,定义一个数字数组来存储方法的参数、方法的局部变量。在编译时局部变量表的长度就已经确定了，且是伴随着方法的产生而产生，栈帧销毁，方法结束也就销毁了。</p><h1 id="类变量与局部变量的不同"><a href="#类变量与局部变量的不同" class="headerlink" title="类变量与局部变量的不同"></a>类变量与局部变量的不同</h1><p>类变量有两次初始化的过程，第一次是在Linking的prepare阶段，进行一个默认初始化，赋予零值；第二次是在类的初始化阶段Initialization，进行一个字面量赋值。</p><p>和类变量的初始化不同，局部变量表是没有默认初始化的，也就是说，局部变量一定得以字面量的形式进行初始化，否则编译器会报错。如下<br><img src="/Stack/var.PNG" alt></p><h1 id="局部变量表在类方法与非类方法中的异同"><a href="#局部变量表在类方法与非类方法中的异同" class="headerlink" title="局部变量表在类方法与非类方法中的异同"></a>局部变量表在类方法与非类方法中的异同</h1><p>首先都是在编译期间就已经确认好了，只不过只有存在当前对象this时，非类方法才能被使用。所以在非类的局部变量表中，0号槽位存储的当前对象this。</p><h1 id="局部变量表的基本存储单位Slot"><a href="#局部变量表的基本存储单位Slot" class="headerlink" title="局部变量表的基本存储单位Slot"></a>局部变量表的基本存储单位Slot</h1><p>这个数组的基本单位是槽(Slot)，一个Slot的大小为32位，也就是int的大小，当变量的大小超过32bit时，用两个Slot来存储，比如double/long。在某个方法中，槽位是可以重复利用的，当某个变量作用域结束后，后面定义的变量可以重复利用该槽位，例如在代码块中定义的变量作用域只在代码块的范围中，代码块执行结束后，原代码块中变量的槽位已然开辟但未利用了，于是后续变量声明可以重复利用该槽位。具体例子如下：</p><pre><code>public void test4() {        int a = 0;        {            int b = 0;            b = a + 1;        }        //变量c使用之前已经销毁的变量b占据的slot的位置        int c = a + 1;    }</code></pre><p>下面是它的局部变量表,很明显变量b作用域结束后，变量c占用了2号槽<br><img src="/Stack/localv.PNG" alt></p><h1 id="什么是操作数栈，对字节码指令进行分析"><a href="#什么是操作数栈，对字节码指令进行分析" class="headerlink" title="什么是操作数栈，对字节码指令进行分析"></a>什么是操作数栈，对字节码指令进行分析</h1><p>在方法的执行过程中，根据字节码指令，进行入栈push和出栈pop的操作。主要保存计算过程的中间结果，作为计算过程中变量的临时存储空间，变量的存储后续会落位到局部变量表中。操作数栈和局部变量表一样，32bit的类型占用一个栈的深度，64bit的类型变量占用两个栈的单位深度，大小在编译过程中就已经确定好了。</p><p>举例，代码如下<br><img src="/Stack/stack.PNG" alt></p><p>下面是它的局部变量表，分别为i，j, x，虽然x是2槽但它也占了3槽空间</p><p><img src="/Stack/stack3.PNG" alt></p><p>下面是它的字节码指令，首先，100入数栈，对局部变量表1槽也就是1进行更新并出栈；3和4行将槽0和1也就是i和j入栈并进行了add，7行更新了局部变量表中2槽也就是x的值，8和9进行了return操作</p><p><img src="/Stack/stack1.PNG" alt></p><p>下面是栈的深度以及本地变量表的槽大小，三个变量，x占两个槽所以共四个槽</p><p><img src="/Stack/stack2.PNG" alt></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> JVM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>力扣347之topN变种问题</title>
+      <link href="/2021/04/05/leetcode347/"/>
+      <url>/2021/04/05/leetcode347/</url>
+      
+        <content type="html"><![CDATA[<h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>给定一个非空的整数数组，返回其中出现频率前 k 高的元素。提示：<br>你可以假设给定的 k 总是合理的，且 1 ≤ k ≤ 数组中不相同的元素的个数。你的算法的时间复杂度必须优于 O(n log n) , n 是数组的大小。<br>题目数据保证答案唯一，换句话说，数组中前 k 个高频元素的集合是唯一的。你可以按任意顺序返回答案。</p><pre><code>示例 1:输入: nums = [1,1,1,2,2,3], k = 2输出: [1,2]示例 2:输入: nums = [1], k = 1输出: [1]</code></pre><h1 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h1><h2 id="1-需要统计元素频数"><a href="#1-需要统计元素频数" class="headerlink" title="1.需要统计元素频数"></a>1.需要统计元素频数</h2><p>元素频数的问题可以采用哈希表，HashMap,K对应元素，V对应频数，将元素统计</p><h2 id="2-需要按频数排序"><a href="#2-需要按频数排序" class="headerlink" title="2.需要按频数排序"></a>2.需要按频数排序</h2><p>采用优先级队列,Priority&lt;int[]&gt;,数组大小为2，第0个存储k,第1个存储v,然后按v排序，对构造方法中的Comparator接口进行实现。</p><pre><code>class Solution {    public int[] topKFrequent(int[] nums, int k) {        //进行统计，数组存入哈希表中，以k-v形式，k是元素,v是频数        Map&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();        for(int num : nums){            // if(map.containsKey(num)){            //     map.put(num,map.get(num) + 1);            // }else {            //     map.put(num, 1);            // }            //优化，采用getOrDefault(K，defalut V)方法           map.put(num, map.getOrDefault(num, 0) + 1);        }        //将结果按频数排序，以小顶堆的形式        int key = 0 , value = 0;        //采用优先级队列，泛型为int[],存储kv,0位置是元素，1为频数，优先级队列会按排序顺序，头部是最小值        PriorityQueue&lt;int[]&gt; queue = new PriorityQueue&lt;int[]&gt;((arr1,arr2) -&gt; arr1[1] - arr2[1]);//按频数排序        for(Map.Entry&lt;Integer,Integer&gt; entry : map.entrySet()){            key = entry.getKey();            value = entry.getValue();            //堆大小不超过k            if(queue.size() == k){                if(value &gt; queue.peek()[1]){                    queue.poll();                    queue.add(new int[]{key,value});                 }                      }else{                    queue.add(new int[]{key,value});                }        }        int[] arr = new int[k];        int index = 0;        Iterator&lt;int[]&gt; iterator = queue.iterator();        int[] temp ;        while(iterator.hasNext()){            if(index == k){                break;            }            temp = iterator.next();            arr[index] = temp[0];            index ++;        }        return arr;    }}</code></pre><p>时间复杂度为nlogk,在遍历的同时对大小为k的堆进行了操作。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 排序 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 排序 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>力扣215之topN问题</title>
+      <link href="/2021/04/04/leetcode215/"/>
+      <url>/2021/04/04/leetcode215/</url>
+      
+        <content type="html"><![CDATA[<h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。<br>链接：<a href="https://leetcode-cn.com/problems/kth-largest-element-in-an-array" target="_blank" rel="noopener">https://leetcode-cn.com/problems/kth-largest-element-in-an-array</a></p><pre><code>示例 1:输入: [3,2,1,5,6,4] 和 k = 2输出: 5示例 2:输入: [3,2,3,1,2,4,5,5,6] 和 k = 4输出: 4</code></pre><h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>topN问题，最简单的方法就是调用库函数排序，然后返回就行，只有两行代码，而且效果还不错，击败9成，做完之后自我感觉良好，然后再细想一下这毕竟是一道中等难道题，那就优化试一下吧！</p><h1 id="方法1：手动实现大顶堆"><a href="#方法1：手动实现大顶堆" class="headerlink" title="方法1：手动实现大顶堆"></a>方法1：手动实现大顶堆</h1><p>手动将其转换为大顶堆，然后再将对顶元素删除，重复k-1次那么对顶不就是倒数第k大的元素吗???</p><pre><code>class Solution { public int findKthLargest(int[] nums, int k) {    int temp = 0;    int end = nums.length - 1;    for(int j = (end - 1) / 2;j&gt;=0;j--){        maxHeap(nums,j,end);    }    for(int i = 0;i&lt;k;i++){        maxHeap(nums,0,end);        temp = nums[0];        nums[0] = nums[end];        nums[end] = temp;        end -- ;    }    return nums[end + 1];}private void maxHeap(int[] nums,int location,int end){    int left = 2*location + 1;    int right = 2*location + 2;    int maxIndex = location;    int temp = 0;    if(left &gt; end){        return;    }else {        if(nums[maxIndex] &lt; nums[left]){            maxIndex = left;        }        if(right &lt;=end &amp;&amp; nums[maxIndex] &lt; nums[right]){            maxIndex = right;        }        if(maxIndex != location){            temp = nums[maxIndex];            nums[maxIndex] = nums[location];            nums[location] = temp;            maxHeap(nums,maxIndex,end);        }    }  }}</code></pre><p>复杂度分析，实现一次大顶堆是logn,重复k次，所以时间复杂度是k*longn,空间复杂度o(1)，就是代码好长。于是我想了一下好像有一个类是<br>PriorityQueue，这是小顶堆，只需要把所有元素添加进去，然后删除堆顶k次就行了。</p><h1 id="方法2-PriorityQueue利用小顶堆"><a href="#方法2-PriorityQueue利用小顶堆" class="headerlink" title="方法2:PriorityQueue利用小顶堆"></a>方法2:PriorityQueue利用小顶堆</h1><pre><code>class Solution { public int findKthLargest(int[] nums, int k) { PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();      for (int val : nums) {         pq.add(val);         if (pq.size() &gt; k)              pq.poll();     }     return pq.peek(); }}</code></pre><p>时间复杂度 O(NlogK)，空间复杂度 O(K)，也还不错。</p><h1 id="方法3：快排思想"><a href="#方法3：快排思想" class="headerlink" title="方法3：快排思想"></a>方法3：快排思想</h1><p>数组中，某个位置作为stand基准值,快排可以实现一次左边都比基准值大，右边比基准值小，那么此时stand所在的位置n就是第n + 1 大的位置，只要n + 1 = k，如果不相等，只需考虑大小然后递归一个方向即可。</p><pre><code>class Solution { public int findKthLargest(int[] nums, int k) {   quickSort(nums,0,nums.length - 1, k - 1);    return nums[k - 1];              }//快排思想private void quickSort(int[] nums,int start,int end,int k){     if(start == end ){        return ;    }    int left = start;    int right = end;    int stand = nums[start];    while(left &lt; right){        while(left &lt; right &amp;&amp; nums[right] &lt;= stand){//很容易忽略等号            right --;        }        nums[left] = nums[right];        while(left &lt; right &amp;&amp; nums[left] &gt;= stand){            left ++;        }        nums[right] = nums[left];    }    nums[left] = stand;    if(left &gt; k){        quickSort(nums,start,left - 1,k);    }else if(left &lt; k) {        quickSort(nums,left + 1,end,k);    } }}</code></pre><p>时间复杂度o(n)</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 排序 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 排序 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>JVM之运行时数据区剖析</title>
+      <link href="/2021/04/03/jvm/"/>
+      <url>/2021/04/03/jvm/</url>
+      
+        <content type="html"><![CDATA[<h1 id="JVM内存区域有哪些部分？怎么划分的？"><a href="#JVM内存区域有哪些部分？怎么划分的？" class="headerlink" title="JVM内存区域有哪些部分？怎么划分的？"></a>JVM内存区域有哪些部分？怎么划分的？</h1><p>首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法栈),以及PC寄存器(程序计数器)，一个进程中的多个线程共享的是堆空间以及堆外内存(元空间、方法区)。<br><img src="/JVM/JVM1.png" alt></p><h1 id="什么是PC寄存器-程序计数器-、PC-Register？"><a href="#什么是PC寄存器-程序计数器-、PC-Register？" class="headerlink" title="什么是PC寄存器(程序计数器)、PC Register？"></a>什么是PC寄存器(程序计数器)、PC Register？</h1><p>PC寄存器就是程序计数器。JVM中PC寄存器并不是物理上的寄存器，更像是物理寄存器的抽象模拟，是一个指令计数器，它里面存储的是下一条需要被执行的字节码指令指针，指向的是栈空间。由于它存储的是字节码指令，所以需要被转换成二进制指令才能被计算机所识别并执行，这就是执行引擎的任务了,执行引擎读取程序计数器的指令，将其转换成二进制指令并交给CPU执行。<br><img src="/JVM/JVM2.png" alt></p><h2 id="问题1-为什么要有程序计数器？"><a href="#问题1-为什么要有程序计数器？" class="headerlink" title="问题1.为什么要有程序计数器？"></a>问题1.为什么要有程序计数器？</h2><p>如上述，PC寄存器存储的是下一条需要被执行的指令，如果没有程序计数器，执行引擎并不知道需要执行哪条指令，CPU也就不会执行我们想要的结果了。</p><h2 id="问题2-为什么程序计数器线程私有？"><a href="#问题2-为什么程序计数器线程私有？" class="headerlink" title="问题2.为什么程序计数器线程私有？"></a>问题2.为什么程序计数器线程私有？</h2><p>拿单核CPU来举例子，首先JVM中由多个线程被执行，在CPU中多个线程是并发执行的，CPU会切换上下文来运作，如果多个线程共用一个程序计数器，并不能保证当CPU调度到某个线程时读取该线程的指令，于是每个线程都会独有一个程序计数器来记录指令。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> JVM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>类的加载过程之类的链接及初始化</title>
+      <link href="/2021/04/03/jvmlinking-md/"/>
+      <url>/2021/04/03/jvmlinking-md/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="%5CJVMLinking%5C1.png" alt></p><h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p><h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p><h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p><pre><code> static{       num = 3;       number = 10;       System.out.println(num);       System.out.println(number);//报错：非法的前向引用。   }   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> JVM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>双指针再续---解决成环问题力扣141,回文问题680,有序合并问题88，字母匹配问题524</title>
+      <link href="/2021/04/03/leetcode-shuang-zhi-zhen-xu-ji/"/>
+      <url>/2021/04/03/leetcode-shuang-zhi-zhen-xu-ji/</url>
+      
+        <content type="html"><![CDATA[<p>141.给定一个链表，判断链表中是否有环。</p><pre><code>如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。如果链表中存在环，则返回 true 。 否则，返回 false 。</code></pre><p>双指针可以做到空间复杂度o(1)</p><pre><code>public boolean hasCycle(ListNode head) {    if(head == null || head.next == null){        return false;    }    ListNode slow = head;    ListNode fast = head.next;    while(slow != null &amp;&amp; fast != null &amp;&amp; fast.next != null){        if(fast == slow){            return true;        }        fast = fast.next.next;        slow = slow.next;    }    return false;}</code></pre><p>680.给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。</p><pre><code>示例 1:输入: &quot;aba&quot;输出: True示例 2:输入: &quot;abca&quot;输出: True解释: 你可以删除c字符。</code></pre><p>双指针时间复杂度o(n)</p><pre><code>public boolean validPalindrome(String s) {    int length = s.length() - 1;    int pre = 0;    int after = length;    while(pre &lt;= after){        if(s.charAt(pre) == s.charAt(after)){            pre ++;            after --;        }else {            return isHuiWen(s,pre + 1,after) || isHuiWen(s,pre,after - 1);        }    }    return true;}public static boolean isHuiWen(String s , int start , int end){    while(start &lt;= end){        if(s.charAt(start) == s.charAt(end)){            start ++;            end --;        }else {            return false;        }    }    return true;}</code></pre><p>88.合并两个有序数组</p><p>给你两个有序整数数组 nums1 和 nums2，请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。你可以假设 nums1 的空间大小等于 m + n，这样它就有足够的空间保存来自 nums2 的元素。</p><pre><code>示例 1：输入：nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3输出：[1,2,2,3,5,6]示例 2：输入：nums1 = [1], m = 1, nums2 = [], n = 0输出：[1]。</code></pre><p>有序合并，依题意并不用创建新的数组，比较两个数组末数字，大的就是两数组最大的数，放到num1最后即可</p><pre><code>public void merge(int[] nums1, int m, int[] nums2, int n) { int index1 = m - 1; int index2 = n - 1; int length = m + n - 1; while(index1 &gt;=0 || index2 &gt;= 0){     if(index1 &lt; 0){         nums1[length --] = nums2[index2 --];     }else if(index2 &lt; 0){         return;     }else {         if(nums1[index1] &lt; nums2[index2]){             nums1[length --] = nums2[index2 --];         }else {             nums1[length --] = nums1[index1 -- ];         }     } }}</code></pre><p>524.给定一个字符串和一个字符串字典，找到字典里面最长的字符串，该字符串可以通过删除给定字符串的某些字符来得到。如果答案不止一个，返回长度最长且字典顺序最小的字符串。如果答案不存在，则返回空字符串。</p><pre><code>示例 1:输入:s = &quot;abpcplea&quot;, d = [&quot;ale&quot;,&quot;apple&quot;,&quot;monkey&quot;,&quot;plea&quot;]输出: &quot;apple&quot;示例 2:输入:s = &quot;abpcplea&quot;, d = [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]输出: &quot;a&quot;</code></pre><p>分析：由题意可知如果字串存在，则该子串和父串之间是可以顺序一一对应的，如果无序且只是一个排列的话难度会大很多。只需要遍历list,然后找到字串并记录，和下一个字串进行对比即可</p><pre><code> public String findLongestWord(String s, List&lt;String&gt; dictionary) {        int index1 = 0;        int index2 = 0;        int length1 = s.length();        int length2 = 0;        int location = 0;        String s2 = &quot;&quot;;        String max = &quot;&quot;;        while(location &lt; dictionary.size()){            s2 = dictionary.get(location);            length2 = s2.length();            if(isSub(s,length1,s2,length2)){                if(length2 &gt; max.length()){                    max = s2;                }else if(length2 == max.length()){                    String[] strs = new String[]{s2,max};                    Arrays.sort(strs);                    max = strs[0];                }            }            location ++;        }        return max;    }    private boolean isSub(String s1,int l1,String s2,int l2){        int i = 0,j = 0;        while(i &lt; l1 &amp;&amp; j &lt; l2){            if(s1.charAt(i) == s2.charAt(j)){                j ++;            }            i ++;        }        return j == l2 ;    }</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 双指针 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 双指针 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一篇文章搞懂类的加载器以及双亲委派机制。</title>
+      <link href="/2021/04/02/classloader/"/>
+      <url>/2021/04/02/classloader/</url>
+      
+        <content type="html"><![CDATA[<h1 id="一、什么是类的加载器？"><a href="#一、什么是类的加载器？" class="headerlink" title="一、什么是类的加载器？"></a>一、什么是类的加载器？</h1><p>类的加载器—ClassLoader,首先从字面意思来看，是加载class文件的一个组件。众所周知，我们的字节码文件.class文件是需要在JVM中运行的，且JVM直接操作的是在内存方面的byte类型数据,所以这时候就需要我们的ClassLoad了，其作用就是将.class文件通过字节流的方式加载到JVM的内存区域中，该区域为方法区。</p><h1 id="二、类的加载器有哪些？"><a href="#二、类的加载器有哪些？" class="headerlink" title="二、类的加载器有哪些？"></a>二、类的加载器有哪些？</h1><p>类的加载器可分为四种</p><h2 id="1-引导类加载器-Bootstrap-ClassLoader"><a href="#1-引导类加载器-Bootstrap-ClassLoader" class="headerlink" title="1.引导类加载器(Bootstrap ClassLoader)"></a>1.引导类加载器(Bootstrap ClassLoader)</h2><p>由C/C++ 编写嵌套在JVM内部，主要用来加载Java的核心类库，含包名为java,javax,sun等开头的类，当我们想通过，getClassLoad()方法返回引导类加载器时，返回值为null,原因和刚才所提，其由C/C++编写。</p><pre><code> public static void main(String[] args) {        try {            ClassLoader classLoader = Class.forName(&quot;java.lang.StringBuilder&quot;).getClassLoader();            System.out.println(classLoader);        } catch (ClassNotFoundException e) {            e.printStackTrace();        }    }</code></pre><p>下面是运行结果</p><pre><code>nullProcess finished with exit code 0</code></pre><h2 id="2-扩展类加载器-Extension-ClassLoader"><a href="#2-扩展类加载器-Extension-ClassLoader" class="headerlink" title="2.扩展类加载器(Extension ClassLoader)"></a>2.扩展类加载器(Extension ClassLoader)</h2><p>ExtClassLoader 是JVM自带的类加载器，由Java语言编写,间接继承于ClassLoad类，主要从系统属性指定的目录java.ext.dirs加载扩展类库，比如我的ExtClassLoader加载的目录如下</p><pre><code>C:\Program Files\Java\jdk1.8.0_102\jre\lib\extC:\WINDOWS\Sun\Java\lib\ext</code></pre><p>注意：如果将用户创建的JAR包放在这些路径下，也会加载该JAR包中的类。<br>从上面路径中选择一个类,扩展类加载器可以通过该类的getClassLoad()的方法返回，如下：</p><pre><code>   ClassLoader classLoader1 = CurveDB.class.getClassLoader();   System.out.println(classLoader1);d</code></pre><p>结果为</p><pre><code>sun.misc.Launcher$ExtClassLoader@4b67cf4d</code></pre><p>显然这个和引导类加载器BootstrapClassLoad不同</p><h2 id="3-应用程序类加载器（AppClassLoader）"><a href="#3-应用程序类加载器（AppClassLoader）" class="headerlink" title="3.应用程序类加载器（AppClassLoader）"></a>3.应用程序类加载器（AppClassLoader）</h2><p>AppClassLoader由Java语言编写，也称系统类加载器，也是JVM自带的类加载器，同样间接继承于ClassLoader类，加载的是java.class.path下的类库，也是程序默认的类加载器，没有特殊指定的情况下，我们自建的类主要通过它来完成加载过程。可通过getClassLoader()方法返回。如下</p><pre><code>Class clazz = Class.forName(&quot;com.zoupeng.java1.ClassLoaderTest2&quot;);System.out.println(clazz.getClassLoader());</code></pre><p>结果如下</p><pre><code>sun.misc.Launcher$AppClassLoader@18b4aac2</code></pre><h2 id="4-自定义类加载器"><a href="#4-自定义类加载器" class="headerlink" title="4.自定义类加载器"></a>4.自定义类加载器</h2><p>自定义类加载器，就是程序员在已有类的基础上，通过继承的方式，来创建一个新的类加载器，主要实现加密功能。例如可以通过继承ClassLoad类，并重写findClass()方法,在逻辑中对字节进行加密处理并通过defineClass()方法将处理后的Class类返回。</p><h1 id="三、需要注意的方面"><a href="#三、需要注意的方面" class="headerlink" title="三、需要注意的方面"></a>三、需要注意的方面</h1><p>首先类的加载器的获取方式也不只是getClassLoader()一种方式，所有方式如下</p><p><img src="/ClassLoder/loaderMethod.PNG" alt></p><p>思考一下，上述四种类加载器有什么关系吗？首先AppClassLoader和ExtClassLoader都是间接继承于ClassLoader类，我们观察类的继承树</p><p><img src="/ClassLoder/JVM.PNG" alt></p><p>下面需要注意了，其实类的加载器的获取方法可以通过该类的下级的getParents()方法获取，如下</p><pre><code>   //获取应用程序类加载器    ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();    System.out.println(systemClassLoader);    //通过AppClassLoder获取ExtClassLoader    ClassLoader extClassLoader = systemClassLoader.getParent();    System.out.println(extClassLoader);    //通过ExtClassLoader获取BootstrapClassLoader    ClassLoader BootstrapClassLoader = extClassLoader.getParent();    System.out.println(BootstrapClassLoader);</code></pre><p>是不是很神奇？他们没有子父类关系却可以通过getParents()获取，我们暂且理解为上下级关系吧。接下来就解释一下为什么，下面的双亲委派机制就体现了这一点。</p><h1 id="四、什么是双亲委派机制？"><a href="#四、什么是双亲委派机制？" class="headerlink" title="四、什么是双亲委派机制？"></a>四、什么是双亲委派机制？</h1><p>Java虚拟机对class文件采取的是按需加载的方式，当使用该类时就会加载它的class文件到内存中生成Class类对象。加载某个类class文件时，Java虚拟机采用双亲委派机制，即先把请求委托它的上级处理，上下级关系为<br>自定义类加载器custom ClassLoader-&gt;系统类加载器AppClassLoader-&gt;拓展类加载器ExtClassLoader-&gt;引导类加载BootstrapClassLoader。 </p><p><img src="/ClassLoder/parents.png" alt></p><p>举个例子，假设我们有一个自建的类，我们知道他是由AppClassLoader加载的，但流程并非这样，需要先知道它的上级是否能加载这个类，如果能加载，那么上级就加载了，且类只能被加载一次，直到BootstrapClassLoader如果加载失败,就往下递归，找到能加载这个类的加载器为止。</p><h2 id="双亲委派机制的作用之沙箱安全机制"><a href="#双亲委派机制的作用之沙箱安全机制" class="headerlink" title="双亲委派机制的作用之沙箱安全机制"></a>双亲委派机制的作用之沙箱安全机制</h2><p>首先它避免了类的重复加载，一个类只能被加载一次，再者就是保护了程序的安全性，防止了核心的API被篡改，如果我们自定义一个类和我们Java核心类库的相同，且自定义的这个类带有main方法，如果没有双亲委派机制的保护作用，我们的Java的核心类库就很有可能被篡改，这就是沙箱安全机制，当我们不能把自定义的类和Java的核心类库放在一起，会报一个安全错误java.lang.SecurityException: Prohibited package name: java.lang，这保证了对源代码的保护。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> JVM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>双指针续篇---力扣633，345</title>
+      <link href="/2021/04/02/leetcode633-345/"/>
+      <url>/2021/04/02/leetcode633-345/</url>
+      
+        <content type="html"><![CDATA[<h2 id="633题目描述"><a href="#633题目描述" class="headerlink" title="633题目描述"></a>633题目描述</h2><p>给定一个非负整数 c ，你要判断是否存在两个整数 a 和 b，使得 a^2 + b^2 = c 。</p><pre><code>示例 1：    输入：c = 5输出：true解释：1 * 1 + 2 * 2 = 5示例 2：    输入：c = 3输出：false示例 3：    输入：c = 4输出：true示例 4：    输入：c = 2输出：true</code></pre><p>和昨天做的类似，只不过改成了二次方，做法相同，采用双指针可以做到o（n）, 需要注意的是边界的判断的问题，特别是循环终止条件为left&lt;=right,因为从最后一个示例可以看出left可以等于right</p><pre><code>class Solution {    public boolean judgeSquareSum(int c) {        if(c &lt;0){            return false;        }        int left = 0;        int right = (int)Math.sqrt(c);        int sum = 0;        while(left &lt;= right){            sum = left * left + right * right;            if(sum == c){                return true;            }else if(sum &gt; c){                right --;            }else {                left ++;            }        }        return false;    }}</code></pre><h2 id="345-题目描述"><a href="#345-题目描述" class="headerlink" title="345 题目描述"></a>345 题目描述</h2><p>反转字符串中的元音字母，编写一个函数，以字符串作为输入，反转该字符串中的元音字母</p><pre><code>示例 1：输入：&quot;hello&quot;输出：&quot;holle&quot;示例 2：输入：&quot;leetcode&quot;输出：&quot;leotcede&quot;</code></pre><p>解法如下，只遍历的一次数组，时间复杂的o(n)</p><pre><code>class Solution {    public String reverseVowels(String s) {        if(s == null){            return null;        }        int length = s.length();        if(length &lt;= 1){            return s;        }        char temp = &#39; &#39;;        char[] chars = s.toCharArray();        int left = 0;        int right = length - 1;        while(left &lt; right){            while(left &lt; right &amp;&amp; !yuanYin(chars[left])){                left ++;            }            while(left &lt; right &amp;&amp; !yuanYin(chars[right])){                right --;            }            if(left &lt; right){                temp = chars[right];                chars[right] = chars[left];                chars[left] = temp;                left ++;                right --;            }                }        return new String(chars);    }    public static boolean yuanYin(char c){        switch(c){            case &#39;a&#39; :                return true;            case &#39;e&#39;:                return true;            case &#39;i&#39; :                return true;            case &#39;o&#39; :                return true;            case &#39;u&#39; :                return true;            case &#39;A&#39; :                return true;            case &#39;E&#39;:                return true;            case &#39;I&#39; :                return true;            case &#39;O&#39; :                return true;            case &#39;U&#39; :                return true;            default :                return false;                            }    }}</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 双指针 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 双指针 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>力扣167之双指针的妙处</title>
+      <link href="/2021/04/01/leetcode167/"/>
+      <url>/2021/04/01/leetcode167/</url>
+      
+        <content type="html"><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>leetcode167–两数之和2:给定一个已按照 升序排列  的整数数组 numbers ，请你从数组中找出两个数满足相加之和等于目标数 target 。</p><p>函数应该以长度为 2 的整数数组的形式返回这两个数的下标值。numbers 的下标 从 1 开始计数 ，所以答案数组应当满足 1 &lt;= answer[0] &lt; answer[1] &lt;= numbers.length 。</p><p>你可以假设每个输入只对应唯一的答案，而且你不可以重复使用相同的元素。<br>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted" target="_blank" rel="noopener">https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted</a></p><pre><code>示例 1：    输入：numbers = [2,7,11,15], target = 9输出：[1,2]解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。</code></pre><h2 id="暴力法"><a href="#暴力法" class="headerlink" title="暴力法"></a>暴力法</h2><p>方法1  暴力法 执行耗时:328 ms,击败了5.13% 的Java用户, 时间复杂度o(n^2)，重置导致多次遍历</p><pre><code>//固定一个位置，从它后面找与它之和=target的位置   public int[] twoSum(int[] numbers, int target) {    int pre = 0;    int later = 1;    int length = numbers.length;    while (pre &lt; later){        if (numbers[pre] + numbers[before] == target){            return new int[]{pre + 1,later + 1};        }else {            later ++;        }        if (before &gt;= length){            //重置            pre ++;            later = pre + 1;        }    }    return null;}</code></pre><h2 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h2><p>方法2 二分查找 执行耗时:4 ms,击败了22.07% 的Java用户，时间复杂度<br>o(nlogn),和暴力法相比还是明显的，二分查找将n转为logn</p><pre><code>      //二分查找public int[] twoSum(int[] numbers, int target) {    //前面和暴力法相同    int length = numbers.length;    int pre = 0;    int later = length - 1;    int middle;    for (int i = 0; i &lt; length; i++) {        pre = i + 1;        later = length - 1;        while (pre &lt;= later){            middle = (pre + later) / 2;            if (numbers[middle] == target - numbers[i]){                return new int[]{i + 1,middle + 1};            }else if(numbers[middle] &gt; target - numbers[i]){                later = middle - 1;            }else {                pre = middle + 1;            }        }    }    return null;}</code></pre><h2 id="双指针法"><a href="#双指针法" class="headerlink" title="双指针法"></a>双指针法</h2><p>方法2 双指针 执行耗时:1 ms,击败了93.03% 的Java用户，时间复杂度o(n),只遍历了一次数组</p><pre><code>//双指针法,指针一前一后，如果指针两位置和小于target，左指针右移public int[] twoSum(int[] numbers, int target) {        //临界条件        if (numbers.length &lt;= 1) return null;        int left = 0;        int right = numbers.length - 1;        while (left &lt; right) {            int sum = numbers[left] + numbers[right];            if (sum == target) {                return new int[]{left + 1,right + 1};            }else if (sum &gt; target){                //如果大于taget,右指针左移                right --;            }else left ++;        }        return null;    }}</code></pre><h2 id="总结心得"><a href="#总结心得" class="headerlink" title="总结心得"></a>总结心得</h2><p>不得不说双指针在这种处理有序数组的题里，真的太妙了,虽然这是一个easy题,但解法的不同带来的效率的不同真不禁让我感叹——算法的重要性！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 双指针 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 双指针 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>为什么要写博客？</title>
-      <link href="/2021/03/21/new-document/"/>
-      <url>/2021/03/21/new-document/</url>
+      <link href="/2021/03/31/1/"/>
+      <url>/2021/03/31/1/</url>
       
         <content type="html"><![CDATA[<h2 id="为什么要写博客？"><a href="#为什么要写博客？" class="headerlink" title="为什么要写博客？"></a>为什么要写博客？</h2><p>不知在哪听说过一句话，说优秀的程序员都会有自己的博客，或许就是因为这句话而有了写博客的想法吧。主要记录自己的成长，并以博客的形式督促自己。</p><h2 id="什么时候开始写的？"><a href="#什么时候开始写的？" class="headerlink" title="什么时候开始写的？"></a>什么时候开始写的？</h2><p>今天是2021年3月31日,也是我的博客的创建的时间。</p><h2 id="主要写什么？"><a href="#主要写什么？" class="headerlink" title="主要写什么？"></a>主要写什么？</h2><p>我目前是一个大三学生，学习的是软件工程大数据方向，我会把自己的笔记和日常都写在这里，主要包含Java,数据结构与算法,Hadoop,Spark。</p><h2 id="conect"><a href="#conect" class="headerlink" title="conect"></a>conect</h2><p>邮箱：<a href="mailto:zoupeng007@126.com" target="_blank" rel="noopener">zoupeng007@126.com</a><br>微信：zoupeng78</p>]]></content>
       
@@ -20,7 +245,7 @@
       
         <tags>
             
-            <tag> 博客 </tag>
+            <tag> 随便写写 </tag>
             
         </tags>
       
