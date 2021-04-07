@@ -4,11 +4,17 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="力扣215之topN问题, blog-zoupeng">
+    <meta name="keywords" content="力扣451 频率排序问题, blog-zoupeng">
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="题目描述在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。链接：https://leetcode-cn.c">
+    <meta name="description" content="题目描述给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
+输入:
+&amp;quot;tree&amp;quot;    
+输出:
+&amp;quot;eert&amp;quot;    
+解释:
+&amp;#39;e&amp;#39;出现两次，&amp;#39;r&amp;#39;和&amp;#39">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +22,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>力扣215之topN问题 | blog-zoupeng</title>
+    <title>力扣451 频率排序问题 | blog-zoupeng</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -235,13 +241,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        力扣215之topN问题
+                        力扣451 频率排序问题
                     </div>
                 </div>
             </div>
@@ -376,7 +382,7 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-04
+                    2021-04-07
                 </div>
 
                 <div class="post-author info-break-policy">
@@ -390,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    734
+                    415
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    1 分
                 </div>
                 
                 
@@ -408,103 +414,54 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。<br>链接：<a href="https://leetcode-cn.com/problems/kth-largest-element-in-an-array" target="_blank" rel="noopener">https://leetcode-cn.com/problems/kth-largest-element-in-an-array</a></p>
-<pre><code>示例 1:
-
-输入: [3,2,1,5,6,4] 和 k = 2
-输出: 5
-示例 2:
-
-输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
-输出: 4</code></pre><h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>topN问题，最简单的方法就是调用库函数排序，然后返回就行，只有两行代码，而且效果还不错，击败9成，做完之后自我感觉良好，然后再细想一下这毕竟是一道中等难道题，那就优化试一下吧！</p>
-<h1 id="方法1：手动实现大顶堆"><a href="#方法1：手动实现大顶堆" class="headerlink" title="方法1：手动实现大顶堆"></a>方法1：手动实现大顶堆</h1><p>手动将其转换为大顶堆，然后再将对顶元素删除，重复k-1次那么对顶不就是倒数第k大的元素吗???</p>
+                <h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>给定一个字符串，请将字符串里的字符按照出现的频率降序排列。</p>
+<pre><code>输入:
+&quot;tree&quot;    
+输出:
+&quot;eert&quot;    
+解释:
+&#39;e&#39;出现两次，&#39;r&#39;和&#39;t&#39;都只出现一次。
+因此&#39;e&#39;必须出现在&#39;r&#39;和&#39;t&#39;之前。此外，&quot;eetr&quot;也是一个有效的答案。</code></pre><h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>涉及数对应频率，可以采用Map结构进行存储，K对应数，V对应它的频数。由于要按频率排序，可以考虑将所有entry放入优先级队列中并按频数排序，最后用遍历队列然后用StringBuild存储即可</p>
 <pre><code>class Solution {
- public int findKthLargest(int[] nums, int k) {
-    int temp = 0;
-    int end = nums.length - 1;
-    for(int j = (end - 1) / 2;j&gt;=0;j--){
-        maxHeap(nums,j,end);
-    }
-    for(int i = 0;i&lt;k;i++){
-        maxHeap(nums,0,end);
-        temp = nums[0];
-        nums[0] = nums[end];
-        nums[end] = temp;
-        end -- ;
-    }
-    return nums[end + 1];
-}
-
-private void maxHeap(int[] nums,int location,int end){
-    int left = 2*location + 1;
-    int right = 2*location + 2;
-    int maxIndex = location;
-    int temp = 0;
-    if(left &gt; end){
-        return;
-    }else {
-        if(nums[maxIndex] &lt; nums[left]){
-            maxIndex = left;
+    public String frequencySort(String s) {
+        //思路：采用HashMap记录KV，K是字母，V是对应的频数，在将HashMap利用成优先级队列并按V排序
+        int length = s.length();
+        if(length &lt;=1){
+            return s;
         }
-        if(right &lt;=end &amp;&amp; nums[maxIndex] &lt; nums[right]){
-            maxIndex = right;
+        int index = 0;
+        Map&lt;Character,Integer&gt; map = new HashMap&lt;&gt;();
+        char c;
+        while(index &lt; length){
+            c = s.charAt(index);
+            map.put(c,map.getOrDefault(c,0) + 1);
+            index ++;
         }
-        if(maxIndex != location){
-            temp = nums[maxIndex];
-            nums[maxIndex] = nums[location];
-            nums[location] = temp;
-            maxHeap(nums,maxIndex,end);
+        PriorityQueue&lt;Map.Entry&lt;Character,Integer&gt;&gt; queue = new PriorityQueue&lt;&gt;((entry1,entry2) -&gt; entry2.getValue() - entry1.getValue());
+        for(Map.Entry&lt;Character,Integer&gt; entry : map.entrySet()){
+            queue.add(entry);
         }
-
-    }
-  }
-}</code></pre><p>复杂度分析，实现一次大顶堆是logn,重复k次，所以时间复杂度是k*longn,空间复杂度o(1)，就是代码好长。于是我想了一下好像有一个类是<br>PriorityQueue，这是小顶堆，只需要把所有元素添加进去，然后删除堆顶k次就行了。</p>
-<h1 id="方法2-PriorityQueue利用小顶堆"><a href="#方法2-PriorityQueue利用小顶堆" class="headerlink" title="方法2:PriorityQueue利用小顶堆"></a>方法2:PriorityQueue利用小顶堆</h1><pre><code>class Solution {
- public int findKthLargest(int[] nums, int k) {
- PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;(); 
-     for (int val : nums) {
-         pq.add(val);
-         if (pq.size() &gt; k) 
-             pq.poll();
-     }
-     return pq.peek();
- }
-}</code></pre><p>时间复杂度 O(NlogK)，空间复杂度 O(K)，也还不错。</p>
-<h1 id="方法3：快排思想"><a href="#方法3：快排思想" class="headerlink" title="方法3：快排思想"></a>方法3：快排思想</h1><p>数组中，某个位置作为stand基准值,快排可以实现一次左边都比基准值大，右边比基准值小，那么此时stand所在的位置n就是第n + 1 大的位置，只要n + 1 = k，如果不相等，只需考虑大小然后递归一个方向即可。</p>
-<pre><code>class Solution {
- public int findKthLargest(int[] nums, int k) {
-
-   quickSort(nums,0,nums.length - 1, k - 1);
-    return nums[k - 1];              
-}
-//快排思想
-private void quickSort(int[] nums,int start,int end,int k){ 
-    if(start == end ){
-        return ;
-    }
-    int left = start;
-    int right = end;
-    int stand = nums[start];
-    while(left &lt; right){
-        while(left &lt; right &amp;&amp; nums[right] &lt;= stand){//很容易忽略等号
-            right --;
+        // while(queue.peek() != null){
+        //     System.out.println(queue.poll().getValue());
+        // }
+        StringBuilder sb = new StringBuilder();
+        Map.Entry&lt;Character,Integer&gt; entry;
+        //堆采用迭代器遍历会出现一些问题，不能保证迭代器的顺序就是值顺序，跟该迭代器机制有关，不能保证左右节点的顺序
+        // Iterator&lt;Map.Entry&lt;Character,Integer&gt;&gt; iterator = queue.iterator();
+        // while(iterator.hasNext()){
+        //     entry = iterator.next();
+        //     for(index = 0,c = entry.getKey();index&lt;entry.getValue();index ++){
+        //         sb.append(c);
+        //     }
+        // }
+        while(queue.peek() != null){
+            entry = queue.poll();
+            for(index = 0,c = entry.getKey();index&lt;entry.getValue();index ++){
+                sb.append(c);
+            }
         }
-        nums[left] = nums[right];
-        while(left &lt; right &amp;&amp; nums[left] &gt;= stand){
-            left ++;
-        }
-        nums[right] = nums[left];
-    }
-
-    nums[left] = stand;
-    if(left &gt; k){
-        quickSort(nums,start,left - 1,k);
-    }else if(left &lt; k) {
-        quickSort(nums,left + 1,end,k);
-    }
- }
-}</code></pre><p>时间复杂度o(n)</p>
-
+        return sb.toString();
+    }</code></pre>
             </div>
             <hr />
 
@@ -541,29 +498,36 @@ private void quickSort(int[] nums,int start,int end,int k){
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/04/05/leetcode347/">
+                <a href="/2021/04/07/li-kou-451/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="力扣347之topN变种问题">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="力扣451 频率排序问题">
                         
-                        <span class="card-title">力扣347之topN变种问题</span>
+                        <span class="card-title">力扣451 频率排序问题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            题目描述给定一个非空的整数数组，返回其中出现频率前 k 高的元素。提示：你可以假设给定的 k 总是合理的，且 1 ≤ k ≤ 数组中不相同的元素的个数。你的算法的时间复杂度必须优于 O(n log n) , n 是数组的大小。题目数据保证答
+                            题目描述给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
+输入:
+&quot;tree&quot;    
+输出:
+&quot;eert&quot;    
+解释:
+&#39;e&#39;出现两次，&#39;r&#39;和&#39
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-05
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-07
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -576,6 +540,7 @@ private void quickSort(int[] nums,int start,int end,int k){
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -594,24 +559,25 @@ private void quickSort(int[] nums,int start,int end,int k){
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/04/03/jvm/">
+                <a href="/2021/04/05/stack/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="JVM之运行时数据区剖析">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="栈帧组成之局部变量表和操作数栈">
                         
-                        <span class="card-title">JVM之运行时数据区剖析</span>
+                        <span class="card-title">栈帧组成之局部变量表和操作数栈</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            JVM内存区域有哪些部分？怎么划分的？首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法
+                            什么是局部变量表局部变量表,LocalVariableTable,定义一个数字数组来存储方法的参数、方法的局部变量。在编译时局部变量表的长度就已经确定了，且是伴随着方法的产生而产生，栈帧销毁，方法结束也就销毁了。
+类变量与局部变量的不同类变
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-03
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-05
                             </span>
                         <span class="publish-author">
                             
