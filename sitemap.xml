@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>locahost:4000/2021/04/03/li-kou-451/</loc>
+    
+    <lastmod>2021-04-07T14:49:50.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>locahost:4000/2021/04/04/leetcode215/</loc>
     
     <lastmod>2021-04-05T15:30:28.000Z</lastmod>
