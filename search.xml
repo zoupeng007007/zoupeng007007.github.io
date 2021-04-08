@@ -129,11 +129,11 @@
     
     
     <entry>
-      <title>JVM之运行时数据区剖析</title>
-      <link href="/2021/04/03/jvm/"/>
-      <url>/2021/04/03/jvm/</url>
+      <title>类的加载过程之类的链接及初始化</title>
+      <link href="/2021/04/03/jvmlinking/"/>
+      <url>/2021/04/03/jvmlinking/</url>
       
-        <content type="html"><![CDATA[<h1 id="JVM内存区域有哪些部分？怎么划分的？"><a href="#JVM内存区域有哪些部分？怎么划分的？" class="headerlink" title="JVM内存区域有哪些部分？怎么划分的？"></a>JVM内存区域有哪些部分？怎么划分的？</h1><p>首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法栈),以及PC寄存器(程序计数器)，一个进程中的多个线程共享的是堆空间以及堆外内存(元空间、方法区)。<br><img src="/JVM/JVM1.png" alt></p><h1 id="什么是PC寄存器-程序计数器-、PC-Register？"><a href="#什么是PC寄存器-程序计数器-、PC-Register？" class="headerlink" title="什么是PC寄存器(程序计数器)、PC Register？"></a>什么是PC寄存器(程序计数器)、PC Register？</h1><p>PC寄存器就是程序计数器。JVM中PC寄存器并不是物理上的寄存器，更像是物理寄存器的抽象模拟，是一个指令计数器，它里面存储的是下一条需要被执行的字节码指令指针，指向的是栈空间。由于它存储的是字节码指令，所以需要被转换成二进制指令才能被计算机所识别并执行，这就是执行引擎的任务了,执行引擎读取程序计数器的指令，将其转换成二进制指令并交给CPU执行。<br><img src="/JVM/JVM2.png" alt></p><h2 id="问题1-为什么要有程序计数器？"><a href="#问题1-为什么要有程序计数器？" class="headerlink" title="问题1.为什么要有程序计数器？"></a>问题1.为什么要有程序计数器？</h2><p>如上述，PC寄存器存储的是下一条需要被执行的指令，如果没有程序计数器，执行引擎并不知道需要执行哪条指令，CPU也就不会执行我们想要的结果了。</p><h2 id="问题2-为什么程序计数器线程私有？"><a href="#问题2-为什么程序计数器线程私有？" class="headerlink" title="问题2.为什么程序计数器线程私有？"></a>问题2.为什么程序计数器线程私有？</h2><p>拿单核CPU来举例子，首先JVM中由多个线程被执行，在CPU中多个线程是并发执行的，CPU会切换上下文来运作，如果多个线程共用一个程序计数器，并不能保证当CPU调度到某个线程时读取该线程的指令，于是每个线程都会独有一个程序计数器来记录指令。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="/JVMLinking/1.png" alt></p><h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p><h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p><h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p><pre><code> static{       num = 3;       number = 10;       System.out.println(num);       System.out.println(number);//报错：非法的前向引用。   }   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>]]></content>
       
       
       <categories>
@@ -154,11 +154,11 @@
     
     
     <entry>
-      <title>类的加载过程之类的链接及初始化</title>
-      <link href="/2021/04/03/jvmlinking/"/>
-      <url>/2021/04/03/jvmlinking/</url>
+      <title>JVM之运行时数据区剖析</title>
+      <link href="/2021/04/03/jvm/"/>
+      <url>/2021/04/03/jvm/</url>
       
-        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="/JVMLinking/1.png" alt></p><h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p><h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p><h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p><pre><code> static{       num = 3;       number = 10;       System.out.println(num);       System.out.println(number);//报错：非法的前向引用。   }   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="JVM内存区域有哪些部分？怎么划分的？"><a href="#JVM内存区域有哪些部分？怎么划分的？" class="headerlink" title="JVM内存区域有哪些部分？怎么划分的？"></a>JVM内存区域有哪些部分？怎么划分的？</h1><p>首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法栈),以及PC寄存器(程序计数器)，一个进程中的多个线程共享的是堆空间以及堆外内存(元空间、方法区)。<br><img src="/JVM/JVM1.png" alt></p><h1 id="什么是PC寄存器-程序计数器-、PC-Register？"><a href="#什么是PC寄存器-程序计数器-、PC-Register？" class="headerlink" title="什么是PC寄存器(程序计数器)、PC Register？"></a>什么是PC寄存器(程序计数器)、PC Register？</h1><p>PC寄存器就是程序计数器。JVM中PC寄存器并不是物理上的寄存器，更像是物理寄存器的抽象模拟，是一个指令计数器，它里面存储的是下一条需要被执行的字节码指令指针，指向的是栈空间。由于它存储的是字节码指令，所以需要被转换成二进制指令才能被计算机所识别并执行，这就是执行引擎的任务了,执行引擎读取程序计数器的指令，将其转换成二进制指令并交给CPU执行。<br><img src="/JVM/JVM2.png" alt></p><h2 id="问题1-为什么要有程序计数器？"><a href="#问题1-为什么要有程序计数器？" class="headerlink" title="问题1.为什么要有程序计数器？"></a>问题1.为什么要有程序计数器？</h2><p>如上述，PC寄存器存储的是下一条需要被执行的指令，如果没有程序计数器，执行引擎并不知道需要执行哪条指令，CPU也就不会执行我们想要的结果了。</p><h2 id="问题2-为什么程序计数器线程私有？"><a href="#问题2-为什么程序计数器线程私有？" class="headerlink" title="问题2.为什么程序计数器线程私有？"></a>问题2.为什么程序计数器线程私有？</h2><p>拿单核CPU来举例子，首先JVM中由多个线程被执行，在CPU中多个线程是并发执行的，CPU会切换上下文来运作，如果多个线程共用一个程序计数器，并不能保证当CPU调度到某个线程时读取该线程的指令，于是每个线程都会独有一个程序计数器来记录指令。</p>]]></content>
       
       
       <categories>
