@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="locahost:4000/"/>
-  <updated>2021-04-07T16:12:25.092Z</updated>
+  <updated>2021-04-08T14:45:40.000Z</updated>
   <id>locahost:4000/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>力扣 贪心算法问题初试</title>
+    <link href="locahost:4000/2021/04/08/tan-xin-suan-fa-1/"/>
+    <id>locahost:4000/2021/04/08/tan-xin-suan-fa-1/</id>
+    <published>2021-04-08T14:57:14.000Z</published>
+    <updated>2021-04-08T14:45:40.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;力扣455-分发饼干&quot;&gt;&lt;a href=&quot;#力扣455-分发饼干&quot; class=&quot;headerlink&quot; title=&quot;力扣455 分发饼干&quot;&gt;&lt;/a&gt;力扣455 分发饼干&lt;/h1&gt;&lt;h2 id=&quot;题目描述&quot;&gt;&lt;a href=&quot;#题目描述&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="贪心算法" scheme="locahost:4000/categories/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="贪心算法" scheme="locahost:4000/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>力扣451 频率排序问题</title>
