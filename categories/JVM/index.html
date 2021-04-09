@@ -275,10 +275,19 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 
                 
                 
+                <a href="/categories/随便写写/" title="随便写写: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            style="background-color: #F9EBEA;">随便写写
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
                 <a href="/categories/JVM/" title="JVM: 4">
                     <span class="chip center-align waves-effect waves-light
                              chip-active "
-                            style="background-color: #F9EBEA;">JVM
+                            style="background-color: #F5EEF8;">JVM
                         <span class="tag-length">4</span>
                     </span>
                 </a>
@@ -287,7 +296,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/categories/排序/" title="排序: 3">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            style="background-color: #F5EEF8;">排序
+                            style="background-color: #D5F5E3;">排序
                         <span class="tag-length">3</span>
                     </span>
                 </a>
@@ -296,7 +305,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/categories/双指针/" title="双指针: 3">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            style="background-color: #D5F5E3;">双指针
+                            style="background-color: #E8F8F5;">双指针
                         <span class="tag-length">3</span>
                     </span>
                 </a>
@@ -305,17 +314,8 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/categories/贪心算法/" title="贪心算法: 2">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            style="background-color: #E8F8F5;">贪心算法
+                            style="background-color: #FEF9E7;">贪心算法
                         <span class="tag-length">2</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/categories/随便写写/" title="随便写写: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            style="background-color: #FEF9E7;">随便写写
-                        <span class="tag-length">1</span>
                     </span>
                 </a>
                 
@@ -379,19 +379,20 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             <div class="article tag-post col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/04/03/jvm/">
+                    <a href="/2021/04/03/jvmlinking/">
                         <div class="card-image tag-image">
                             
                             
-                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="JVM之运行时数据区剖析">
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="类的加载过程之类的链接及初始化">
                             
-                            <span class="card-title">JVM之运行时数据区剖析</span>
+                            <span class="card-title">类的加载过程之类的链接及初始化</span>
                         </div>
                     </a>
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                JVM内存区域有哪些部分？怎么划分的？首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法
+                                前言今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流
+什么是类的链接Linking？类的链接包括 验证-&g
                             
                         </div>
                         <div class="publish-info">
@@ -425,20 +426,19 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             <div class="article tag-post col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2021/04/03/jvmlinking/">
+                    <a href="/2021/04/03/jvm/">
                         <div class="card-image tag-image">
                             
                             
-                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="类的加载过程之类的链接及初始化">
+                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="JVM之运行时数据区剖析">
                             
-                            <span class="card-title">类的加载过程之类的链接及初始化</span>
+                            <span class="card-title">JVM之运行时数据区剖析</span>
                         </div>
                     </a>
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                前言今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流
-什么是类的链接Linking？类的链接包括 验证-&g
+                                JVM内存区域有哪些部分？怎么划分的？首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法
                             
                         </div>
                         <div class="publish-info">
@@ -528,7 +528,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 
             
             &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-            <span class="white-color">8.6k</span>
+            <span class="white-color">9.4k</span>
             
 
             <br>

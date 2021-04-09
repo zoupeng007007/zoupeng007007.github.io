@@ -8,8 +8,8 @@
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="力扣452 用最少数量的箭引爆气球题目描述在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
-">
+    <meta name="description" content="什么是贪心算法？一句话概况就是，解决某个问题需要很多步，如果我们从第一步开始就满足每一步都是局部最优的，那么解决这个问题后，我们采用方法就是接近全局最优解的方法(也可能是最优解)。这就是贪心算法。
+力扣452 用最少数量的箭引爆气球题目描述">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -391,14 +391,14 @@
                 
                 <div class="info-break-policy">
                     <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    645
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    5 分
                 </div>
                 
                 
@@ -409,7 +409,8 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="力扣452-用最少数量的箭引爆气球"><a href="#力扣452-用最少数量的箭引爆气球" class="headerlink" title="力扣452 用最少数量的箭引爆气球"></a>力扣452 用最少数量的箭引爆气球</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。</p>
+                <h1 id="什么是贪心算法？"><a href="#什么是贪心算法？" class="headerlink" title="什么是贪心算法？"></a>什么是贪心算法？</h1><p>一句话概况就是，解决某个问题需要很多步，如果我们从第一步开始就满足每一步都是局部最优的，那么解决这个问题后，我们采用方法就是接近全局最优解的方法(也可能是最优解)。这就是贪心算法。</p>
+<h1 id="力扣452-用最少数量的箭引爆气球"><a href="#力扣452-用最少数量的箭引爆气球" class="headerlink" title="力扣452 用最少数量的箭引爆气球"></a>力扣452 用最少数量的箭引爆气球</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。</p>
 <p>一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。</p>
 <p>给你一个数组 points ，其中 points [i] = [xstart,xend] ，返回引爆所有气球所必须射出的最小弓箭数。</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>字好长啊，还是稍微考验一点理解能力的，题意就是如果两个气球有重叠部分，就能被同一支箭射穿，且要求箭数量最小值，我啪的一声很快啊，直接排序加贪心涌上心头，干上！写着写着通过了所有测试用例，自信满满，提交一波。[[-2147483646,-2147483645],[2147483646,2147483647]]答案错误。。。。。。我还是大意了没有闪，第一次入坑超出int范围的问题，好吧，吃一箭长一智，以后审题还是要注意范围。</p>
@@ -449,6 +450,36 @@
         return numbers;
     }
 }</code></pre><p>时间复杂度，O(nlogn),n为数组长度</p>
+<h1 id="力扣406-根据身高重建队列"><a href="#力扣406-根据身高重建队列" class="headerlink" title="力扣406 根据身高重建队列"></a>力扣406 根据身高重建队列</h1><h2 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h2><p>假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。</p>
+<p>请你重新构造并返回输入数组 people 所表示的队列。返回的队列应该格式化为数组 queue ，其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。</p>
+<pre><code>示例 1：
+
+输入：people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+解释：
+编号为 0 的人身高为 5 ，没有身高更高或者相同的人排在他前面。
+编号为 1 的人身高为 7 ，没有身高更高或者相同的人排在他前面。
+编号为 2 的人身高为 5 ，有 2 个身高更高或者相同的人排在他前面，即编号为 0 和 1 的人。
+编号为 3 的人身高为 6 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+编号为 4 的人身高为 4 ，有 4 个身高更高或者相同的人排在他前面，即编号为 0、1、2、3 的人。
+编号为 5 的人身高为 7 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+因此 [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] 是重新构造后的队列。</code></pre><h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>思考了比较久，想到了插入排序，只要保证每次插入后，对应的k不冲突就行。考虑“高中插矮”，如果高的优先的话，在构造好的高身高队列中插入矮的k并不冲突。但如果是“矮中插高”,其他高的k都会受到影响。所以需要先排序，按身高降序，K值升序，这两个优先级。</p>
+<pre><code>class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        //由于已经构造好的身高高的中插入身高矮的并不与它的k冲突，所以优先安排身高高的位置。
+        //临界判断
+        if(people == null || people.length == 0 || people.length == 1){
+            return people;
+        }
+        Arrays.sort(people,(arr1,arr2) -&gt; arr1[0] == arr2[0]? Integer.compare(arr1[1],arr2[1]) : Integer.compare(arr2[0],arr1[0]));
+        //考虑用ArrayList,插入后的细节就可以不用考虑，但前提是身高相同的人中，k小的优先，这样才不会冲突。
+        List&lt;int[]&gt; list = new ArrayList&lt;&gt;();
+        for(int i = 0;i&lt;people.length;i++){
+            list.add(people[i][1],people[i]);//add(index,Object);
+        }
+        return list.toArray(new int[people.length][]);
+    }
+}</code></pre><p>采用的是完全是插排思想,时间复杂度O(n^2)，题目标记的是贪心算法，好像也算吧。。</p>
 
             </div>
             <hr />
@@ -503,8 +534,8 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            力扣452 用最少数量的箭引爆气球题目描述在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。
-
+                            什么是贪心算法？一句话概况就是，解决某个问题需要很多步，如果我们从第一步开始就满足每一步都是局部最优的，那么解决这个问题后，我们采用方法就是接近全局最优解的方法(也可能是最优解)。这就是贪心算法。
+力扣452 用最少数量的箭引爆气球题目描述
                         
                     </div>
                     <div class="publish-info">
@@ -695,7 +726,7 @@
 
             
             &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-            <span class="white-color">8.6k</span>
+            <span class="white-color">9.4k</span>
             
 
             <br>
