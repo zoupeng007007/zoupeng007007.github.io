@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>力扣 贪心算法问题再探</title>
+      <link href="/2021/04/09/tan-xin-suan-fa-2/"/>
+      <url>/2021/04/09/tan-xin-suan-fa-2/</url>
+      
+        <content type="html"><![CDATA[<h1 id="力扣452-用最少数量的箭引爆气球"><a href="#力扣452-用最少数量的箭引爆气球" class="headerlink" title="力扣452 用最少数量的箭引爆气球"></a>力扣452 用最少数量的箭引爆气球</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以纵坐标并不重要，因此只要知道开始和结束的横坐标就足够了。开始坐标总是小于结束坐标。</p><p>一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。</p><p>给你一个数组 points ，其中 points [i] = [xstart,xend] ，返回引爆所有气球所必须射出的最小弓箭数。</p><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>字好长啊，还是稍微考验一点理解能力的，题意就是如果两个气球有重叠部分，就能被同一支箭射穿，且要求箭数量最小值，我啪的一声很快啊，直接排序加贪心涌上心头，干上！写着写着通过了所有测试用例，自信满满，提交一波。[[-2147483646,-2147483645],[2147483646,2147483647]]答案错误。。。。。。我还是大意了没有闪，第一次入坑超出int范围的问题，好吧，吃一箭长一智，以后审题还是要注意范围。</p><pre><code>class Solution {    public int findMinArrowShots(int[][] points) {        //交集问题，贪心算法，尽量满足交集多的集合        //如果只有一个集合则直接返回1        int length = points.length;        if(length == 1){            return 1;        }        if(length == 0){            return 0 ;        }        //先排序,按照第0个位置排序        Arrays.sort(points,(arr1,arr2) -&gt; Integer.compare(arr1[0],arr2[0]));//入坑，不要用arr1[0] - arr2[0],会超出int范围        //记录交集,初始值为排序后的第一个集合        int left = points[0][0];        int right = points[0][1];        //记录箭数量，至少一支        int numbers = 1;        //index从1开始一一对比        for(int i = 1;i&lt;length;i++){            //如果right小于i位置的左区间,无交集，则消耗一支箭            if(right &lt; points[i][0]){                numbers ++;                //交集需要更新为i位置的集合                left = points[i][0];                right = points[i][1];            }else {//有交集,获取并更新交集即可,不消耗箭                left = points[i][0];                if(right &gt; points[i][1]){                    right = points[i][1];                }            }        }        return numbers;    }}</code></pre><p>时间复杂度，O(nlogn),n为数组长度</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 贪心算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 贪心算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>力扣 贪心算法问题初试</title>
       <link href="/2021/04/08/tan-xin-suan-fa-1/"/>
       <url>/2021/04/08/tan-xin-suan-fa-1/</url>
