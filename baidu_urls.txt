@@ -1,11 +1,14 @@
+locahost:4000/2021/04/10/dynamiclinking/
+locahost:4000/2021/04/10/chong-hua-wen-ti/
+locahost:4000/2021/04/10/gu-piao-mai-mai/
 locahost:4000/2021/04/09/tan-xin-suan-fa-2/
 locahost:4000/2021/04/08/tan-xin-suan-fa-1/
 locahost:4000/2021/04/07/li-kou-451/
 locahost:4000/2021/04/05/stack/
 locahost:4000/2021/04/05/leetcode347/
 locahost:4000/2021/04/04/leetcode215/
-locahost:4000/2021/04/03/jvmlinking/
 locahost:4000/2021/04/03/jvm/
+locahost:4000/2021/04/03/jvmlinking/
 locahost:4000/2021/04/03/leetcode-shuang-zhi-zhen-xu-ji/
 locahost:4000/2021/04/02/classloader/
 locahost:4000/2021/04/02/leetcode633-345/

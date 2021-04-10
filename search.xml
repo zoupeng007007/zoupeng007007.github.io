@@ -4,6 +4,81 @@
   
     
     <entry>
+      <title>JVM 栈帧组成部分之动态链接和方法返回地址</title>
+      <link href="/2021/04/10/dynamiclinking/"/>
+      <url>/2021/04/10/dynamiclinking/</url>
+      
+        <content type="html"><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><h2 id="什么是动态链接"><a href="#什么是动态链接" class="headerlink" title="什么是动态链接"></a>什么是动态链接</h2><p><img src="/DynamicLinking/3.png" alt><br>Java源文件被编译到字节码文件中时，所有的变量和方法引用都作为符号引用保存在class文件的常量池中，例如某个方法中调用一个方法时，在操作数栈中，就是通过方法的符号引用表示，动态链接就是将符号引用直接指向常量池中的方法。所以动态链接作用是将栈帧中操作数栈的<strong>符号引用转换成指向常量池中方法的直接引用</strong>。 具体例子如下：<br><img src="/DynamicLinking/1.png" alt><br>上面是通过解析字节码文件的eat()方法中操作数栈的情况，其中#2，#3，#4代表的就是符号引用，是以字面量的形式存在的，其对应的常量池中的位置如下：<br><img src="/DynamicLinking/2.png" alt><br>动态链接的作用就是将这种符号引用的形式直接转换成直接引用</p><h2 id="为什么要用动态链接，而不是直接将方法绑定在栈帧中？"><a href="#为什么要用动态链接，而不是直接将方法绑定在栈帧中？" class="headerlink" title="为什么要用动态链接，而不是直接将方法绑定在栈帧中？"></a>为什么要用动态链接，而不是直接将方法绑定在栈帧中？</h2><p>首先动态链接占用的内存较小，如果直接将方法绑定，执行起来效率不高，并且，这样会很浪费空间，因为方法是可以线程内多个栈帧共享和多线程共享的，实现复用可以减少内存消耗，而不是每调用一次就消耗完整的内存。</p><h2 id="静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？"><a href="#静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？" class="headerlink" title="静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？"></a>静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？</h2><p>都是一一对应的，静态链接对应早期绑定和非虚方法，在<strong>编译期间就确定</strong>了被调用的方法，例如静态方法、私有方法、final方法、实例构造器方法、父类方法，因为他们都不满足多态的特性，编译器可以确定在方法被调用时具体方法的位置，也称为静态链接，对应的操作数栈指令有invokespecial、invokestatic。</p><p>动态链接对应晚期绑定和虚方法，在<strong>编译期间无法确定</strong>调用的方法是哪个，需要满足多态的特性，父类方法非final,子类继承父类并重写了父类的方法，如果在方法参数中声明为父类或接口形参，然后调用该方法时，编译器并不能确定该方法就是父类/接口或者是子类的方法，因此称为晚期绑定，对应的操作数栈指令有invokevirtual(非final)、invokeinterface(非final修饰)、invokedynamic(lambda表达式)。</p><h2 id="什么是虚方法表？其作用是什么？"><a href="#什么是虚方法表？其作用是什么？" class="headerlink" title="什么是虚方法表？其作用是什么？"></a>什么是虚方法表？其作用是什么？</h2><p>在面向对象编程中，会频繁使用到动态分派，例如方法的继承，当调用子类方法时，没有找到，实际上会向父类寻找，这样会非常影响到效率。所以虚方法表作为索引的存在，记录了每个方法具体归属于哪个类。注意：只有虚方法才会存在表中，因为非虚方法是确定的。<br><img src="/DynamicLinking/4.png" alt><br><strong>每个类都有一个虚方法表，代表着每个方法的实际入口</strong></p><h1 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h1><h2 id="什么是方法返回地址"><a href="#什么是方法返回地址" class="headerlink" title="什么是方法返回地址"></a>什么是方法返回地址</h2><p>方法的退出分为：1.正常退出 2.异常退出</p><p>当方法正常退出时，当前PC寄存器的值会作为返回地址，通过执行引擎传递给上层调用者。当前栈帧结束后，恢复上层方法的局部变量表、操作数栈、将返回值压入调用者栈帧的操作数栈并设置PC寄存器值。操作数栈字节码指令中，返回指令包括ireturn(当返回值是boolean,byte,short,int类型)、lreturn、freturn、dreturn、areturn(引用数据类型)，另外还有return指令供声明为void的方法、实例初始化方法init、类和接口初始化方法cinit</p><p>当方法异常退出时，返回地址要通过异常表来确定，如果未对异常进行处理，不会产生异常表，此时方法异常退出。栈帧没有相关信息，并且方法异常退出后不会给它的调用者产生返回值。方法执行过程中的异常处理会存放在异常表中，方便找到异常代码。<br><img src="/DynamicLinking/5.png" alt></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> JVM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JVM </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>力扣 种花问题</title>
+      <link href="/2021/04/10/chong-hua-wen-ti/"/>
+      <url>/2021/04/10/chong-hua-wen-ti/</url>
+      
+        <content type="html"><![CDATA[<h1 id="力扣605-种花问题"><a href="#力扣605-种花问题" class="headerlink" title="力扣605 种花问题"></a>力扣605 种花问题</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，它们会争夺水源，两者都会死去。给你一个整数数组  flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没种植花，1 表示种植了花。另有一个数 n ，能否在不打破种植规则的情况下种入 n 朵花？能则返回 true ，不能则返回 false。<br>示例 1：</p><pre><code>输入：flowerbed = [1,0,0,0,1], n = 1输出：true示例 2：输入：flowerbed = [1,0,0,0,1], n = 2输出：false</code></pre><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>当前位置满足不为1且左右都不是1即可种下一朵</p><pre><code>class Solution {    public boolean canPlaceFlowers(int[] flowerbed, int n) {        //当种下一朵花时，要保证左右没有花        //临界条件        if(flowerbed == null) return false;        int length = flowerbed.length;        //最多种length/2 + 1朵        if(n&gt; length/2 + 1){            return false;        }        int left;        int right;        for(int i = 0;i &lt;length ; i++){            if(n == 0){                return true;            }            //如果左右有花就跳出一次            if(flowerbed[i] == 1 || (i + 1 &lt; length) &amp;&amp; flowerbed[i + 1] == 1|| (i - 1) &gt;=0 &amp;&amp; flowerbed[i - 1] == 1 ){                continue;            }            //满足条件种下            if(i &lt; length){                flowerbed[i] = 1;            }            //少一朵            n --;        }        return n &lt;= 0;    }}</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 动态规划 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 动态规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>力扣 买卖股票问题初探</title>
+      <link href="/2021/04/10/gu-piao-mai-mai/"/>
+      <url>/2021/04/10/gu-piao-mai-mai/</url>
+      
+        <content type="html"><![CDATA[<h1 id="力扣121-买卖股票的最佳时机"><a href="#力扣121-买卖股票的最佳时机" class="headerlink" title="力扣121 买卖股票的最佳时机"></a>力扣121 买卖股票的最佳时机</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。<br>返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。</p><pre><code>输入：[7,1,5,3,6,4]输出：5解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。</code></pre><h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>其实就是求局部最小值和局部最大值差的问题，遍历时记录小值，并算出其后每个大值 - 小值，就是收益，记录更新最大收益即可</p><pre><code>class Solution {    public int maxProfit(int[] prices) {        if(prices.length &lt;= 1){            return 0;        }        int maxEarn = 0;        int minPrice = prices[0];        for(int i = 1;i&lt;prices.length;i++){            maxEarn = Math.max(maxEarn,prices[i] - minPrice);            minPrice = Math.min(minPrice,prices[i]);        }        return maxEarn;    }}</code></pre><p>时间复杂度O(n)</p><h1 id="122-买卖股票的最佳时机-II"><a href="#122-买卖股票的最佳时机-II" class="headerlink" title="122 买卖股票的最佳时机 II"></a>122 买卖股票的最佳时机 II</h1><h2 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。<br>设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p><pre><code>输入: [7,1,5,3,6,4]输出: 7解释: 在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。     随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6-3 = 3 。</code></pre><h2 id="题目分析-1"><a href="#题目分析-1" class="headerlink" title="题目分析"></a>题目分析</h2><p>保证每次都是卖出赚的，尽可能连续，一旦跌就不持有</p><pre><code>class Solution {    public int maxProfit(int[] prices) {        //思路：保证每次都是赚的，尽可能连续        //临界        int length = prices.length;        if(length &lt;= 1){            return 0;        }        int sum = 0;//记录最大利润        int price = prices[0];//记录前一天价格        for(int i = 1;i&lt;length;i++){            if(prices[i] &gt; price){//持有                sum += prices[i] - price;            }            price = prices[i];        }        return sum;    }}</code></pre><p>贪心思想，求所有不相交区间长度和。</p><pre><code>class Solution {    public int maxProfit(int[] prices) {        int ans = 0;        int n = prices.length;        for (int i = 1; i &lt; n; i++) {            ans += Math.max(0, prices[i] - prices[i - 1]);        }        return ans;    }}</code></pre><p>时间复杂度O(n)</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 动态规划 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 动态规划 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>力扣 贪心算法问题再探</title>
       <link href="/2021/04/09/tan-xin-suan-fa-2/"/>
       <url>/2021/04/09/tan-xin-suan-fa-2/</url>
@@ -154,11 +229,11 @@
     
     
     <entry>
-      <title>类的加载过程之类的链接及初始化</title>
-      <link href="/2021/04/03/jvmlinking/"/>
-      <url>/2021/04/03/jvmlinking/</url>
+      <title>JVM之运行时数据区剖析</title>
+      <link href="/2021/04/03/jvm/"/>
+      <url>/2021/04/03/jvm/</url>
       
-        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="/JVMLinking/1.png" alt></p><h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p><h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p><h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p><pre><code> static{       num = 3;       number = 10;       System.out.println(num);       System.out.println(number);//报错：非法的前向引用。   }   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="JVM内存区域有哪些部分？怎么划分的？"><a href="#JVM内存区域有哪些部分？怎么划分的？" class="headerlink" title="JVM内存区域有哪些部分？怎么划分的？"></a>JVM内存区域有哪些部分？怎么划分的？</h1><p>首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法栈),以及PC寄存器(程序计数器)，一个进程中的多个线程共享的是堆空间以及堆外内存(元空间、方法区)。<br><img src="/JVM/JVM1.png" alt></p><h1 id="什么是PC寄存器-程序计数器-、PC-Register？"><a href="#什么是PC寄存器-程序计数器-、PC-Register？" class="headerlink" title="什么是PC寄存器(程序计数器)、PC Register？"></a>什么是PC寄存器(程序计数器)、PC Register？</h1><p>PC寄存器就是程序计数器。JVM中PC寄存器并不是物理上的寄存器，更像是物理寄存器的抽象模拟，是一个指令计数器，它里面存储的是下一条需要被执行的字节码指令指针，指向的是栈空间。由于它存储的是字节码指令，所以需要被转换成二进制指令才能被计算机所识别并执行，这就是执行引擎的任务了,执行引擎读取程序计数器的指令，将其转换成二进制指令并交给CPU执行。<br><img src="/JVM/JVM2.png" alt></p><h2 id="问题1-为什么要有程序计数器？"><a href="#问题1-为什么要有程序计数器？" class="headerlink" title="问题1.为什么要有程序计数器？"></a>问题1.为什么要有程序计数器？</h2><p>如上述，PC寄存器存储的是下一条需要被执行的指令，如果没有程序计数器，执行引擎并不知道需要执行哪条指令，CPU也就不会执行我们想要的结果了。</p><h2 id="问题2-为什么程序计数器线程私有？"><a href="#问题2-为什么程序计数器线程私有？" class="headerlink" title="问题2.为什么程序计数器线程私有？"></a>问题2.为什么程序计数器线程私有？</h2><p>拿单核CPU来举例子，首先JVM中由多个线程被执行，在CPU中多个线程是并发执行的，CPU会切换上下文来运作，如果多个线程共用一个程序计数器，并不能保证当CPU调度到某个线程时读取该线程的指令，于是每个线程都会独有一个程序计数器来记录指令。</p>]]></content>
       
       
       <categories>
@@ -179,11 +254,11 @@
     
     
     <entry>
-      <title>JVM之运行时数据区剖析</title>
-      <link href="/2021/04/03/jvm/"/>
-      <url>/2021/04/03/jvm/</url>
+      <title>类的加载过程之类的链接及初始化</title>
+      <link href="/2021/04/03/jvmlinking/"/>
+      <url>/2021/04/03/jvmlinking/</url>
       
-        <content type="html"><![CDATA[<h1 id="JVM内存区域有哪些部分？怎么划分的？"><a href="#JVM内存区域有哪些部分？怎么划分的？" class="headerlink" title="JVM内存区域有哪些部分？怎么划分的？"></a>JVM内存区域有哪些部分？怎么划分的？</h1><p>首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法栈),以及PC寄存器(程序计数器)，一个进程中的多个线程共享的是堆空间以及堆外内存(元空间、方法区)。<br><img src="/JVM/JVM1.png" alt></p><h1 id="什么是PC寄存器-程序计数器-、PC-Register？"><a href="#什么是PC寄存器-程序计数器-、PC-Register？" class="headerlink" title="什么是PC寄存器(程序计数器)、PC Register？"></a>什么是PC寄存器(程序计数器)、PC Register？</h1><p>PC寄存器就是程序计数器。JVM中PC寄存器并不是物理上的寄存器，更像是物理寄存器的抽象模拟，是一个指令计数器，它里面存储的是下一条需要被执行的字节码指令指针，指向的是栈空间。由于它存储的是字节码指令，所以需要被转换成二进制指令才能被计算机所识别并执行，这就是执行引擎的任务了,执行引擎读取程序计数器的指令，将其转换成二进制指令并交给CPU执行。<br><img src="/JVM/JVM2.png" alt></p><h2 id="问题1-为什么要有程序计数器？"><a href="#问题1-为什么要有程序计数器？" class="headerlink" title="问题1.为什么要有程序计数器？"></a>问题1.为什么要有程序计数器？</h2><p>如上述，PC寄存器存储的是下一条需要被执行的指令，如果没有程序计数器，执行引擎并不知道需要执行哪条指令，CPU也就不会执行我们想要的结果了。</p><h2 id="问题2-为什么程序计数器线程私有？"><a href="#问题2-为什么程序计数器线程私有？" class="headerlink" title="问题2.为什么程序计数器线程私有？"></a>问题2.为什么程序计数器线程私有？</h2><p>拿单核CPU来举例子，首先JVM中由多个线程被执行，在CPU中多个线程是并发执行的，CPU会切换上下文来运作，如果多个线程共用一个程序计数器，并不能保证当CPU调度到某个线程时读取该线程的指令，于是每个线程都会独有一个程序计数器来记录指令。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="/JVMLinking/1.png" alt></p><h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p><h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p><h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p><pre><code> static{       num = 3;       number = 10;       System.out.println(num);       System.out.println(number);//报错：非法的前向引用。   }   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>]]></content>
       
       
       <categories>

@@ -4,12 +4,11 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="类的加载过程之类的链接及初始化, blog-zoupeng">
+    <meta name="keywords" content="JVM 栈帧组成部分之动态链接和方法返回地址, blog-zoupeng">
     <meta name="baidu-site-verification" content="fmlEuI34ir">
     <meta name="google-site-verification" content="yCy2azpds5XSuGZvis6OuA-XIGF5GuGpYRAaGfD6o48">
     <meta name="360-site-verification" content="b7c11a830ef90fd1464ad6206bb7b6e7">
-    <meta name="description" content="前言今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流
-什么是类的链接Linking？类的链接包括 验证-&amp;g">
+    <meta name="description" content="动态链接什么是动态链接Java源文件被编译到字节码文件中时，所有的变量和方法引用都作为符号引用保存在class文件的常量池中，例如某个方法中调用一个方法时，在操作数栈中，就是通过方法的符号引用表示，动态链接就是将符号引用直接指向常量池中的方">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +16,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>类的加载过程之类的链接及初始化 | blog-zoupeng</title>
+    <title>JVM 栈帧组成部分之动态链接和方法返回地址 | blog-zoupeng</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -236,13 +235,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/25.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        类的加载过程之类的链接及初始化
+                        JVM 栈帧组成部分之动态链接和方法返回地址
                     </div>
                 </div>
             </div>
@@ -377,7 +376,7 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-03
+                    2021-04-10
                 </div>
 
                 <div class="post-author info-break-policy">
@@ -391,14 +390,14 @@
                 
                 <div class="info-break-policy">
                     <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    473
+                    1.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    3 分
                 </div>
                 
                 
@@ -409,18 +408,14 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天来说一下类加载器子系统中loading之后的两个阶段，Linking和Initialization。经过类的loading过程之后，在内存区域方法区中就有了这个类的二进制字节流<br><img src="/JVMLinking/1.png" alt></p>
-<h1 id="什么是类的链接Linking？"><a href="#什么是类的链接Linking？" class="headerlink" title="什么是类的链接Linking？"></a>什么是类的链接Linking？</h1><p>类的链接包括 验证-&gt;准备-&gt;解析</p>
-<h1 id="类的链接具体做了哪些事情？"><a href="#类的链接具体做了哪些事情？" class="headerlink" title="类的链接具体做了哪些事情？"></a>类的链接具体做了哪些事情？</h1><p>1.验证Verify阶段：主要是确保Class文件的字节流中的信息符合虚拟机要求，保证loading的正确性。主要包括文件格式验证、元数据验证、字节码验证。符号引用验证。<br>2.准备阶段(Prepare): 给类变量static变量设置初始值—零值,但是不包括被final修饰的变量，final修饰后的类变量会被直接显式赋值，不存在初始值。不会给实例变量初始化，类变量分配在方法区，实例变量伴随对象。<br>3.解析Resolve:将常量池内的符号引用转换成直接引用，简单理解就是将字面量形式转换成直接指针指向的形式。解析过程往往伴随着执行完初始化之后再执行。</p>
-<h1 id="类的初始化Initialization是什么？"><a href="#类的初始化Initialization是什么？" class="headerlink" title="类的初始化Initialization是什么？"></a>类的初始化Initialization是什么？</h1><p>初始化是执行类构造器方法<clinit>()的过程，该方法不需要定义，是由编译器javac自动分析执行，主要作用是手机所有类的变量和静态代码块以及赋值动作，对类变量(静态变量)进行初始化的过程。<br>注意：是按语句的执行顺序执行，如果按下面顺序，赋值在定义之前，编译会报错。</clinit></p>
-<pre><code> static{
-       num = 3;
-       number = 10;
-       System.out.println(num);
-       System.out.println(number);//报错：非法的前向引用。
-   }
-
-   private static int number = 10;</code></pre><p>最后一点就是，如果有多个线程准备加载类，则只有一个线程会加载成功。</p>
+                <h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><h2 id="什么是动态链接"><a href="#什么是动态链接" class="headerlink" title="什么是动态链接"></a>什么是动态链接</h2><p><img src="/DynamicLinking/3.png" alt><br>Java源文件被编译到字节码文件中时，所有的变量和方法引用都作为符号引用保存在class文件的常量池中，例如某个方法中调用一个方法时，在操作数栈中，就是通过方法的符号引用表示，动态链接就是将符号引用直接指向常量池中的方法。所以动态链接作用是将栈帧中操作数栈的<strong>符号引用转换成指向常量池中方法的直接引用</strong>。 具体例子如下：<br><img src="/DynamicLinking/1.png" alt><br>上面是通过解析字节码文件的eat()方法中操作数栈的情况，其中#2，#3，#4代表的就是符号引用，是以字面量的形式存在的，其对应的常量池中的位置如下：<br><img src="/DynamicLinking/2.png" alt><br>动态链接的作用就是将这种符号引用的形式直接转换成直接引用</p>
+<h2 id="为什么要用动态链接，而不是直接将方法绑定在栈帧中？"><a href="#为什么要用动态链接，而不是直接将方法绑定在栈帧中？" class="headerlink" title="为什么要用动态链接，而不是直接将方法绑定在栈帧中？"></a>为什么要用动态链接，而不是直接将方法绑定在栈帧中？</h2><p>首先动态链接占用的内存较小，如果直接将方法绑定，执行起来效率不高，并且，这样会很浪费空间，因为方法是可以线程内多个栈帧共享和多线程共享的，实现复用可以减少内存消耗，而不是每调用一次就消耗完整的内存。</p>
+<h2 id="静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？"><a href="#静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？" class="headerlink" title="静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？"></a>静态链接和动态链接，早期绑定和晚期绑定，非虚方法和虚方法？</h2><p>都是一一对应的，静态链接对应早期绑定和非虚方法，在<strong>编译期间就确定</strong>了被调用的方法，例如静态方法、私有方法、final方法、实例构造器方法、父类方法，因为他们都不满足多态的特性，编译器可以确定在方法被调用时具体方法的位置，也称为静态链接，对应的操作数栈指令有invokespecial、invokestatic。</p>
+<p>动态链接对应晚期绑定和虚方法，在<strong>编译期间无法确定</strong>调用的方法是哪个，需要满足多态的特性，父类方法非final,子类继承父类并重写了父类的方法，如果在方法参数中声明为父类或接口形参，然后调用该方法时，编译器并不能确定该方法就是父类/接口或者是子类的方法，因此称为晚期绑定，对应的操作数栈指令有invokevirtual(非final)、invokeinterface(非final修饰)、invokedynamic(lambda表达式)。</p>
+<h2 id="什么是虚方法表？其作用是什么？"><a href="#什么是虚方法表？其作用是什么？" class="headerlink" title="什么是虚方法表？其作用是什么？"></a>什么是虚方法表？其作用是什么？</h2><p>在面向对象编程中，会频繁使用到动态分派，例如方法的继承，当调用子类方法时，没有找到，实际上会向父类寻找，这样会非常影响到效率。所以虚方法表作为索引的存在，记录了每个方法具体归属于哪个类。注意：只有虚方法才会存在表中，因为非虚方法是确定的。<br><img src="/DynamicLinking/4.png" alt><br><strong>每个类都有一个虚方法表，代表着每个方法的实际入口</strong></p>
+<h1 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h1><h2 id="什么是方法返回地址"><a href="#什么是方法返回地址" class="headerlink" title="什么是方法返回地址"></a>什么是方法返回地址</h2><p>方法的退出分为：1.正常退出 2.异常退出</p>
+<p>当方法正常退出时，当前PC寄存器的值会作为返回地址，通过执行引擎传递给上层调用者。当前栈帧结束后，恢复上层方法的局部变量表、操作数栈、将返回值压入调用者栈帧的操作数栈并设置PC寄存器值。操作数栈字节码指令中，返回指令包括ireturn(当返回值是boolean,byte,short,int类型)、lreturn、freturn、dreturn、areturn(引用数据类型)，另外还有return指令供声明为void的方法、实例初始化方法init、类和接口初始化方法cinit</p>
+<p>当方法异常退出时，返回地址要通过异常表来确定，如果未对异常进行处理，不会产生异常表，此时方法异常退出。栈帧没有相关信息，并且方法异常退出后不会给它的调用者产生返回值。方法执行过程中的异常处理会存放在异常表中，方便找到异常代码。<br><img src="/DynamicLinking/5.png" alt></p>
 
             </div>
             <hr />
@@ -458,29 +453,30 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/04/03/jvm/">
+                <a href="/2021/04/10/dynamiclinking/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="JVM之运行时数据区剖析">
+                        <img src="/medias/featureimages/25.jpg" class="responsive-img" alt="JVM 栈帧组成部分之动态链接和方法返回地址">
                         
-                        <span class="card-title">JVM之运行时数据区剖析</span>
+                        <span class="card-title">JVM 栈帧组成部分之动态链接和方法返回地址</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            JVM内存区域有哪些部分？怎么划分的？首先大致分为两块区域，那便是线程共享的与线程私有的。JVM存在于内存当中，意味着Java进程的启动，进程有着很多线程，有的是用户线程，也有守护线程。一个线程都独立拥有自己的栈空间(包括虚拟机栈和本地方法
+                            动态链接什么是动态链接Java源文件被编译到字节码文件中时，所有的变量和方法引用都作为符号引用保存在class文件的常量池中，例如某个方法中调用一个方法时，在操作数栈中，就是通过方法的符号引用表示，动态链接就是将符号引用直接指向常量池中的方
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-03
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -493,6 +489,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -511,32 +508,31 @@
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/04/03/leetcode-shuang-zhi-zhen-xu-ji/">
+                <a href="/2021/04/10/chong-hua-wen-ti/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="双指针再续---解决成环问题力扣141,回文问题680,有序合并问题88，字母匹配问题524">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="力扣 种花问题">
                         
-                        <span class="card-title">双指针再续---解决成环问题力扣141,回文问题680,有序合并问题88，字母匹配问题524</span>
+                        <span class="card-title">力扣 种花问题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            141.给定一个链表，判断链表中是否有环。
-如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 
+                            力扣605 种花问题问题描述假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，它们会争夺水源，两者都会死去。给你一个整数数组  flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-03
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-10
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/双指针/" class="post-category" target="_blank">
-                                    双指针
+                            <a href="/categories/动态规划/" class="post-category" target="_blank">
+                                    动态规划
                                 </a>
                             
                             
@@ -546,8 +542,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/双指针/" target="_blank">
-                        <span class="chip bg-color">双指针</span>
+                    <a href="/tags/动态规划/" target="_blank">
+                        <span class="chip bg-color">动态规划</span>
                     </a>
                     
                 </div>
